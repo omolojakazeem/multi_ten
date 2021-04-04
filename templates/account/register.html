@@ -1,0 +1,68 @@
+{% extends "layouts/base-fullscreen.html" %}
+{% load widget_tweaks %}
+
+{% block title %} Login {% endblock %}
+
+{% block content %}   
+
+    <div class="auth-wrapper">
+        <div class="auth-content">
+            <div class="auth-bg">
+                <span class="r"></span>
+                <span class="r s"></span>
+                <span class="r s"></span>
+                <span class="r"></span>
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="feather icon-user-plus auth-icon"></i>
+                    </div>
+                    <h3 class="mb-4">Sign up</h3>
+
+                    <span class="mb-0 text-muted">
+                        {% if msg %}
+                            {{ msg | safe }}
+                        {% else %}
+                            Add your credentials
+                        {% endif %} 
+                    </span>
+
+                    <br />
+                    <br />
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-danger" role="alert">
+                               {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <form role="form" method="post" action="">
+                        {% csrf_token %}
+                        {% render_field register_form.company_name class="form-control mb-3" placeholder="Company Name" id='company_name' %}
+                            <span class="text-error">{{ register_form.username.errors }}</span>
+
+                        {% render_field register_form.email class="form-control mb-3" placeholder="Email Address" id='email' %}
+                            <span class="text-error">{{ register_form.email.errors }}</span>
+                        {% render_field register_form.password1 class="form-control mb-3" placeholder="Password" id='password' %}
+                            <span class="text-error">{{ register_form.password1.errors }}</span>
+                        {% render_field register_form.password2 class="form-control mb-3" placeholder="Confirm Password" id='password2' %}
+                            <span class="text-error">{{ register_form.password2.errors }}</span>
+
+                        <div class="form-group text-left">
+                            <div class="checkbox checkbox-fill d-inline">
+                                <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="">
+                                <label for="checkbox-fill-a1" class="cr"> Agree with <a href="#">terms</a></label>
+                            </div>
+                        </div>
+                        <button type="submit" name="register" class="btn btn-block btn-primary shadow-2 mb-4">Register</button>
+                    </form>
+
+                    <p class="mb-0 text-muted">Already have an account? <a href="{% url 'account:login_user' %}" >Login</a></p>
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

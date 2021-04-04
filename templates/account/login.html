@@ -1,0 +1,65 @@
+{% extends "layouts/base-fullscreen.html" %}
+{% load widget_tweaks %}
+{% block title %} Login {% endblock %}
+
+{% block content %}   
+
+    <div class="auth-wrapper">
+        <div class="auth-content">
+            <div class="auth-bg">
+                <span class="r"></span>
+                <span class="r s"></span>
+                <span class="r s"></span>
+                <span class="r"></span>
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="feather icon-unlock auth-icon"></i>
+                    </div>
+                    <h3 class="mb-4">Login</h3>
+
+                    <span class="mb-0 text-muted">
+                        {% if msg %}
+                            {{ msg | safe }}
+                        {% else %}
+                            Add your credentials
+                        {% endif %} 
+                    </span>
+
+                    <br />
+                    <br />
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger" role="alert">
+                                   {{message}}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    <form role="form" method="post" action="">
+
+                        {% csrf_token %}
+
+                        {% render_field login_form.email class="form-control mb-3" placeholder="Email" id="email" %}
+                            {{ login_form.email.errors.as_text }}
+                        {% render_field login_form.password class="form-control mb-3" placeholder="Password" id="password" %}
+                            <span class="text-error">{{ login_form.email.errors }}</span>
+                        <div class="form-group text-left">
+                            <div class="checkbox checkbox-fill d-inline">
+                                <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="">
+                                <label for="checkbox-fill-a1" class="cr"> Save Details</label>
+                            </div>
+                        </div>
+                        <button type="submit" name="login" class="btn btn-block btn-primary shadow-2 mb-4">Login</button>
+
+                    </form>
+
+                    <p class="mb-0 text-muted">Don’t have an account? <a href="{% url 'account:register_user' %}" >Signup</a></p>
+                    <br />
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
