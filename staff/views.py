@@ -41,14 +41,8 @@ class RegisterUser(View):
             staff.company = company
             staff.save()
                         
-            #set up new schema   
-
-            schema = company.company_domain
-            with connection.cursor() as cursor:                        
-                cursor.execute(f"CREATE SCHEMA IF NOT EXISTS {schema}")
-                cursor.execute(f"SET search_path to {schema}")
-                os.system(f'python tenant_context_manage.py {schema} migrate')
-
+            #set up new schema
+            create_new_schema(company.company_domain)            
             
             #save user also in new schema            
             company = Company.objects.create(company_name=company_name)
@@ -61,10 +55,9 @@ class RegisterUser(View):
             #authenticate and login
             my_user = authenticate(request, email=email, password=password)
             login(request, my_user)
-            
-            
-            
-            return redirect('http://' + company.company_domain + '.wisemen:8000' + 'account:dashboard')
+                                    
+            return redirect('http://' + company.company_domain + '.wisemen:8000' + 'account/dashboard/' + company.company_domain)
+            #return redirect('http://' + company.company_domain + '.wisemen:8000' + 'account/dashboard/' + company.company_domain)
 
         else:
             if register_form.errors:
@@ -74,21 +67,21 @@ class RegisterUser(View):
             return redirect('account:register_user')
 
 
+#class Dashboard(View, domain):
 class Dashboard(View):
     template = 'account/profile.html'
-
+    
     def get(self, request):
+        '''
         try:
             # Retrieve the user account associated with the current subdomain.
             staff = Staff.objects.get(company__company_domain=request.user.company.company_domain)
         except Staff.DoesNotExist:
             # No user matches the current subdomain, so return a generic 404.
             raise Http404
-
-        context = {
-            'staff':staff,
-
-        }
+         '''
+        context = {}
+            
         return render(request, template_name=self.template, context=context)
 
 
@@ -97,12 +90,13 @@ class LoginUser(View):
 
     def get(self, request):
         if request.user.is_authenticated:
-            with connection.cursor() as cursor:                
-                    cursor.execute(f"SET search_path to {request.user.company.company_domain}")
-
-            target = 'http://' + request.user.company.company_domain + '.wisemen:8000/account/dashboard'
-            return HttpResponseRedirect(target)
+            
+            change_schema(request.user.company.company_domain)
+            
+            target = 'http://' + request.user.company.company_domain + '.wisemen:8000/account/dashboard/'
+            return redirect(target)
             #return redirect('account:dashboard', request.user.company.company_domain)
+        
         login_form = StaffLoginForm()
         context = {
             'login_form': login_form,
@@ -115,21 +109,17 @@ class LoginUser(View):
             email = login_form.cleaned_data['email']
             password = login_form.cleaned_data['password']
             my_user = authenticate(request, email=email, password=password)
-
-
+            print("MY USER", my_user)
 
             if my_user is not None:                
                 target = 'http://' + my_user.company.company_domain + '.wisemen:8000/account/dashboard'
                 
-                '''
-                with connection.cursor() as cursor:                
-                    cursor.execute(f"SET search_path to {my_user.company.company_domain}")
-
-                print("SCHEMA", my_user.company.company_domain)
-                my_user = authenticate(request, email=email, password=password) 
-                '''              
-                login(request, my_user)
-                return redirect(target)
+                change_schema(my_user.company.company_domain)
+                 
+                user = authenticate(request, email=email, password=password)                               
+                login(request, user)
+                
+                return redirect(target, user=user)
                 
             else:
                 print(login_form.errors)
@@ -146,4 +136,22 @@ class LoginUser(View):
 class LogoutUser(View):
     def get(self,request):
         logout(request)
-        return redirect('account:register_user')
+
+        #change schema
+        change_schema('www')       
+
+        target = 'http://www.wisemen:8000/account/login/'            
+        return redirect(target)
+
+
+def change_schema(schema):
+     with connection.cursor() as cursor:                
+                    cursor.execute(f"SET search_path to {schema}")
+
+
+def create_new_schema(schema):
+    with connection.cursor() as cursor:                        
+        cursor.execute(f"CREATE SCHEMA IF NOT EXISTS {schema}")
+        cursor.execute(f"SET search_path to {schema}")
+        sos.system(f'python tenant_context_manage.py {schema} migrate')
+

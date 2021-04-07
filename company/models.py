@@ -27,7 +27,7 @@ class Company(models.Model):
     def save(self, *args, **kwargs):
         self.company_slug = slugify(self.company_name)
         self.company_domain = get_domain(self.company_name)
-        self.company_host = self.company_domain + self.SUPER_DOMAIN
+        self.company_host = self.company_domain + "." + self.SUPER_DOMAIN
         super(Company, self).save(*args, **kwargs)
 
     def __str__(self):
