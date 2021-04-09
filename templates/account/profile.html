@@ -24,7 +24,8 @@
                                         <h5 class="m-b-10">User / Company Profile</h5>
                                     </div>
                                     <ul class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="{% url 'account:dashboard' request.user.company.company_domain %}"><i class="feather icon-home"></i></a></li>
+                                        
+                                        <li class="breadcrumb-item"><a href="{% url 'account:dashboard' %}"><i class="feather icon-home"></i></a></li>
                                         <li class="breadcrumb-item"><a href="#!">Profile Page</a></li>
                                     </ul>
                                 </div>
@@ -87,31 +88,31 @@
                                                    <tbody>
                                                       <tr>
                                                           <th scope="row">Company Name</th>
-                                                          <td>{{user_company}}</td>
+                                                          <td>{{user.company}}</td>
                                                       </tr>
                                                       <tr>
                                                           <th scope="row">Company Address</th>
-                                                          <td>{{user_company.company_address}}</td>
+                                                          <td>{{user.company.company_address}}</td>
                                                       </tr>
                                                       <tr>
                                                           <th scope="row">Company Email</th>
-                                                          <td>{{user_company.company_email}}</td>
+                                                          <td>{{user.company.company_email}}</td>
                                                       </tr>
                                                       <tr>
                                                           <th scope="row">Company Email CC</th>
-                                                          <td>{{user_company.company_email_cc}}</td>
+                                                          <td>{{user.company.company_email_cc}}</td>
                                                       </tr>
                                                       <tr>
                                                           <th scope="row">Company Phone No.</th>
-                                                          <td>{{user_company.company_phone}}</td>
+                                                          <td>{{user.company.company_phone}}</td>
                                                       </tr>
                                                       <tr>
                                                           <th scope="row">Company Reg. No.</th>
-                                                          <td>{{user_company.company_RC}}</td>
+                                                          <td>{{user.company.company_RC}}</td>
                                                       </tr>
                                                       <tr>
                                                           <th scope="row">Date Joined</th>
-                                                          <td>{{user_company.company_registered_on}}</td>
+                                                          <td>{{user.company.company_registered_on}}</td>
                                                       </tr>
                                                   </tbody>
                                                  </table>

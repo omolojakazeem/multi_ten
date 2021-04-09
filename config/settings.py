@@ -14,7 +14,7 @@ SECRET_KEY = 'n3ehidn7td72=2q04t(ok=*w@1nqn(+ws=296rh(9@j!r2)4vc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ 'wisemen', '.wisemen', '127.0.0.1' ]
 
 
 # Application definition
@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'department',
 
     'widget_tweaks',
+
+    'tenants',
 ]
 
 AUTH_USER_MODEL = 'staff.Staff'
@@ -44,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'tenants.middlewares.TenantMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -72,6 +75,17 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
+
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',        
+        'NAME': 'wisemen',
+        'USER': 'postgres',
+        'PASSWORD': 'askmenow8',
+        'HOST': 'localhost',
+        'PORT': '5432',
+
+    },
+
+    'second': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
